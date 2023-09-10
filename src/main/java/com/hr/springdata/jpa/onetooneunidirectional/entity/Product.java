@@ -1,6 +1,5 @@
 package com.hr.springdata.jpa.onetooneunidirectional.entity;
 
-import com.hr.springdata.jpa.entity.CourseMaterial;
 import jakarta.persistence.*;
 import lombok.*;
 
