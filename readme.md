@@ -53,7 +53,7 @@ USER-MANUAL
 
   * EAGER Fetching:
     * There may be N+1 queries to fetch the inverse class instances as the inverse class instances are fetched individually while fetching the owner class.
-    * This is not the correct way. We should have only one query which joins both owner and inverse class. This is done by the below mechanism in the repository class for inverse class.
+    * This is not the correct way. We should have only one query which joins both owner and inverse class. This is done by the below mechanism in the repository class for owner class.
       <pre>
       @EntityGraph(attributePaths = "userManual")
       List<Product> findAll();
