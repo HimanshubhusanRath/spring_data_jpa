@@ -32,7 +32,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     /**
      * Find the students whose last name is not null
      *
-     * @param lastName
      * @return
      */
     List<Student> findByLastNameNotNull();
@@ -85,6 +84,15 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     List<Student> getStudentsByEmailNamedParam(@Param("email") final String email);
 
     /**
+     * Find the students using the given native query with named parameters
+     *
+     * @param email
+     * @return
+     */
+    @Query(value = "select * from student s where s.email = :email", nativeQuery = true)
+    List<Student> getStudentsByEmailNamedParamNative(@Param("email") final String email);
+
+    /**
      * Updates the first name of the student as given name for the given email
      *
      * Note: without @Modifying and @Transactional, the update is done but with errors.
@@ -98,4 +106,6 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     @Transactional
     @Query(value = "update student s set first_name = ?1 where s.email = ?2", nativeQuery = true)
     int updateFirstNameByEmail(final String firstName, final String email);
+
+
 }

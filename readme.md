@@ -50,18 +50,27 @@ USER-MANUAL
   * LAZY Fetching:
     * Inverse class is not fetched while fetching owner class.
     * When the inverse class attribute (present in owner class) is accessed, then inverse class is fetched.
-
-  * EAGER Fetching:
-    * There may be N+1 queries to fetch the inverse class instances as the inverse class instances are fetched individually while fetching the owner class.
-    * This is not the correct way. We should have only one query which joins both owner and inverse class. This is done by the below mechanism in the repository class for owner class.
+  * ##### N+1 Problem:
+    * There may be N+1 queries to fetch the inverse class when the inverse class is fetched individually after fetching the owner class.
+    * Imagine we want to fetch a list of `Product`s, where each product has a `UserManual`. 
+    * This results in 1 query for fetching the list of products and then 1 query to fetch user manual for each product (N queries for N products). So, N+1.
+    * This is not an efficient way in this scenario. We should have only one query which joins both owner and inverse class. This is done by the below mechanism in the repository class for owner class.
       <pre>
       @EntityGraph(attributePaths = "userManual")
       List<Product> findAll();
       </pre>
-    * So, with this, the inverse class ('UserManual') is not fetched using individual queries rather using one query with joins.
+    * So, with this, the inverse class ('UserManual') is not fetched using individual queries rather using one query with join.
     * NOTE:
-      * THIS SHOULD ONLY BE USED WHEN THERE IS ANYWAY AN EAGER FETCHING IS DONE (Either configured as EAGER or configured as LAZY but eventually becomes EAGER) BUT WE WANT TO OPTIMIZE THIS BY JOINING OWNER & INVERSE TABLES INSTEAD OF QUERYING THEM INDIVIDUALLY.
-      * THIS SHOULD NOT BE USED IN CASE OF PURE LAZY FETCH.
+      * This solution should only be used when we want to fetch both the owner class and the inverse class together.
+      * This should not be used in case of pure LAZY loading.
+  * EAGER Fetching:
+    * Inverse class is also fetched while fetching owner class at the same time.
+    * In this activity, if one query (with join) is used or multiple queries are used, depends on the usage of `@EntityGraph` configuration. Check the below table to get more details.
+
+  * | Fetch Type | Without `@EntityGraph` | With `@EntityGraph` |
+    |------------|-------------------------|----------------------|
+    | **EAGER**  | - Executes one query to fetch all instances of the `owner` class.<br> - Executes an additional query per `owner` instance to fetch associated `inverse` class data (fetched simultaneously with the owner). | - Executes only **one query** with a **JOIN** to fetch both `owner` and `inverse` classes together.<br> - Optimized for a single query, preventing additional queries for each associated entity. |
+    | **LAZY**   | - Executes **one query** to fetch all instances of the `owner` class.<br> - Executes an individual query for each `inverse` class when the association is accessed for the first time (fetches are deferred until access). | - Executes only **one query** with a **JOIN** to fetch both `owner` and `inverse` classes together.<br> - Optimized for a single query, preventing additional queries for each associated entity. |
 
 * When inverse class instance is queried, no owner class instance is fetched as there is no attribute for 'owner class' present in the inverse class because of uni-directional relationship.
 

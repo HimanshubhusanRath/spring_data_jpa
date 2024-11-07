@@ -1,7 +1,9 @@
 package com.hr.springdata.jpa;
 
+import com.hr.springdata.jpa.entity.Guardian;
 import com.hr.springdata.jpa.entity.Student;
 import com.hr.springdata.jpa.repository.StudentRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,35 +16,32 @@ class StudentRepositoryTests {
 	@Autowired
 	private StudentRepository studentRepository;
 
-//	@Test
-//	void saveStudent() {
-//		final Student student = Student.builder()
-//				.emailId("hr_7@gmail.com")
-//				.firstName("HR")
-//				.lastName("Rath")
-//				//.guardianName("Father")
-//				//.guardianEmail("father@gmail.com")
-//				//.guardianMobile("12222322220")
-//				.build();
-//		studentRepository.save(student);
-//	}
-//
-//	@Test
-//	void saveStudentWithGuardian() {
-//		final Student student = Student.builder()
-//				.emailId("hr_8@gmail.com")
-//				.firstName("HR")
-//				.lastName("Rath")
-//				.guardian(new Guardian("Mother","mother@gmail.com","9987459454"))
-//				.build();
-//		studentRepository.save(student);
-//	}
-//
-//	@Test
-//	void getAllStudents()
-//	{
-//		studentRepository.findAll().forEach(System.out::println);
-//	}
+	@Test
+	void saveStudent() {
+		final Student student = Student.builder()
+				.emailId("hr_7@gmail.com")
+				.firstName("HR")
+				.lastName("Rath")
+				.build();
+		studentRepository.save(student);
+	}
+
+	@Test
+	void saveStudentWithGuardian() {
+		final Student student = Student.builder()
+				.emailId("hr_8@gmail.com")
+				.firstName("HR")
+				.lastName("Rath")
+				.guardian(new Guardian("Mother","mother@gmail.com","9987459454"))
+				.build();
+		studentRepository.save(student);
+	}
+
+	@Test
+	void getAllStudents()
+	{
+		studentRepository.findAll().forEach(System.out::println);
+	}
 
 	@Test
 	void findByFirstName()
@@ -94,7 +93,21 @@ class StudentRepositoryTests {
 	}
 
 	@Test
+	void findByEmailNamedParamNative()
+	{
+		final List<Student> students = studentRepository.getStudentsByEmailNamedParamNative("hr7@gmail.com");
+		Assertions.assertTrue(students.size()==0);
+	}
+
+	@Test
 	void updateFirstNameByEmail()
+	{
+		int result = studentRepository.updateFirstNameByEmail("Rajesh","hr5@gmail.com");
+		System.out.println("Result : " + result);
+	}
+
+	@Test
+	void updateFirstNameByEmailUsingNamedParams()
 	{
 		int result = studentRepository.updateFirstNameByEmail("Rajesh","hr5@gmail.com");
 		System.out.println("Result : " + result);

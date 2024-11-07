@@ -3,6 +3,7 @@ package com.hr.springdata.jpa;
 import com.hr.springdata.jpa.onetooneunidirectional.entity.Product;
 import com.hr.springdata.jpa.onetooneunidirectional.entity.UserManual;
 import com.hr.springdata.jpa.onetooneunidirectional.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,14 +28,15 @@ public class OneToOneUniDirectionalTest {
                 .userManual(userManual)
                 .build();
 
-
         productRepository.save(product);
     }
 
     @Test
+    @Transactional
     void getProducts()
     {
-        final List<Product> userManuals = productRepository.findAll();
-        System.out.println("Results : "+userManuals);
+        final List<Product> products = productRepository.findAll();
+        System.out.println("Results : "+products);
+        products.forEach(p -> System.out.println("User Manual URL : "+p.getUserManual().getUrl()));
     }
 }
