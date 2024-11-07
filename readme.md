@@ -50,7 +50,7 @@ USER-MANUAL
   * LAZY Fetching:
     * Inverse class is not fetched while fetching owner class.
     * When the inverse class attribute (present in owner class) is accessed, then inverse class is fetched.
-  * ##### N+1 Problem:
+  * ### N+1 Problem:
     * There may be N+1 queries to fetch the inverse class when the inverse class is fetched individually after fetching the owner class.
     * Imagine we want to fetch a list of `Product`s, where each product has a `UserManual`. 
     * This results in 1 query for fetching the list of products and then 1 query to fetch user manual for each product (N queries for N products). So, N+1.
