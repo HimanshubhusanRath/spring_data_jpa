@@ -338,7 +338,7 @@ private List<Customer> categories;
     * @OneToOne: Always ends up in EAGER, even configured as LAZY (because of proxy object creation)
     * @OneToMany: LAZY (owner class is not joined/queried) --  [As there is a list reference to the owner class, this might be done because of performance reasons]
 
-* POINTS TO REMEMBER:
+### POINTS TO REMEMBER:
   * In case of LAZY, if we have enough information in the current class to create a proxy object for the dependent class, then we don't need to join the mapping table / dependent table else, we need to join.
     * Examples: 
       * In case of @OneToOne without a 3rd table, we have a foreign key column (mapping information) in the owner class. So, we can use this value to create proxy object for inverse class. Hence, no join needed.
