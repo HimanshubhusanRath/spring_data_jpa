@@ -8,6 +8,7 @@ import com.hr.springdata.jpa.onetooneunidirectional.entity.Product;
 import com.hr.springdata.jpa.onetooneunidirectional.entity.UserManual;
 import com.hr.springdata.jpa.onetooneunidirectional.repository.ProductRepository;
 import com.hr.springdata.jpa.onetooneunidirectional.repository.UserManualRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,16 +58,19 @@ public class OneToOneBiDirectionalTest {
     }
 
     @Test
+    @Transactional
     void getAllEmployees()
     {
         final List<Employee> employees = employeeRepository.findAll();
-        System.out.println("Results : "+employees);
+        System.out.println("Employees are fetched");
+        employees.forEach(e -> System.out.println("Laptop brand : "+e.getLaptop().getBrand()));
     }
 
     @Test
     void getAllLaptops()
     {
         final List<Laptop> laptops = laptopRepository.findAll();
-        System.out.println("Results : "+laptops);
+        System.out.println("Laptops are fetched");
+        laptops.forEach(l -> System.out.println("Employee ID : "+l.getEmployee().getEmpId()));
     }
 }

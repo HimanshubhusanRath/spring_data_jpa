@@ -9,6 +9,7 @@ import com.hr.springdata.jpa.onetooneusing3rdtable.entity.House;
 import com.hr.springdata.jpa.onetooneusing3rdtable.entity.ParkingSpace;
 import com.hr.springdata.jpa.onetooneusing3rdtable.repository.HouseRepository;
 import com.hr.springdata.jpa.onetooneusing3rdtable.repository.ParkingSpaceRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,10 +58,12 @@ public class OneToOneUsing3rdTableTest {
     }
 
     @Test
+    @Transactional
     void getHouses()
     {
         final List<House> houses = houseRepository.findAll();
         System.out.println("Results : "+houses);
+        houses.forEach(h -> System.out.println("Parking ID : "+h.getParkingSpace().getParkingType()));
     }
 
     @Test
@@ -68,5 +71,6 @@ public class OneToOneUsing3rdTableTest {
     {
         final List<ParkingSpace> parkingSpaces = parkingSpaceRepository.findAll();
         System.out.println("Results : "+parkingSpaces);
+        parkingSpaces.forEach(h -> System.out.println("House Name : "+h.getHouse().getHouseName()));
     }
 }

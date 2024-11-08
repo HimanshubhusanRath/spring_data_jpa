@@ -10,7 +10,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@ToString(exclude = "customers")
+@ToString(exclude = "categories")
 public class Item {
 
     @Id
@@ -30,10 +30,10 @@ public class Item {
             fetch = FetchType.LAZY
     )
     @JoinTable(
-            name="customer_items",
+            name="category_items",
             joinColumns = {@JoinColumn(name = "item_id")},
-            inverseJoinColumns = {@JoinColumn(name = "customer_id")}
+            inverseJoinColumns = {@JoinColumn(name = "category_id")}
     )
-    private List<Customer> customers;
+    private List<Category> categories;
 
 }

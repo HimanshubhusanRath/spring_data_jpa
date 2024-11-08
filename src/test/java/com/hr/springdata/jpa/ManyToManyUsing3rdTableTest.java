@@ -1,19 +1,14 @@
 package com.hr.springdata.jpa;
 
-import com.hr.springdata.jpa.manytomanyUsing3rdTable.entity.Customer;
+import com.hr.springdata.jpa.manytomanyUsing3rdTable.entity.Category;
 import com.hr.springdata.jpa.manytomanyUsing3rdTable.entity.Item;
-import com.hr.springdata.jpa.manytomanyUsing3rdTable.repository.CustomerRepository;
+import com.hr.springdata.jpa.manytomanyUsing3rdTable.repository.CategoryRepository;
 import com.hr.springdata.jpa.manytomanyUsing3rdTable.repository.ItemRepository;
-import com.hr.springdata.jpa.onetomanyUsing3rdTable.entity.School;
-import com.hr.springdata.jpa.onetomanyUsing3rdTable.entity.Teacher;
-import com.hr.springdata.jpa.onetomanyUsing3rdTable.repository.SchoolRepository;
-import com.hr.springdata.jpa.onetomanyUsing3rdTable.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,7 +16,7 @@ import java.util.List;
 public class ManyToManyUsing3rdTableTest {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private ItemRepository itemRepository;
@@ -29,48 +24,52 @@ public class ManyToManyUsing3rdTableTest {
     @Test
     void addCustomerWithItems()
     {
-        final Customer customer = Customer.builder()
-                .customerName("D d")
+        final Category category = Category.builder()
+                .categoryName("men-dresses")
                 .build();
-        final List<Customer> customers = Arrays.asList(customer);
+        final List<Category> categories = Arrays.asList(category);
 
         final Item item = Item.builder().itemTitle("D T-Shirt").build();
-        item.setCustomers(customers);
+        item.setCategories(categories);
 
         final List<Item> items = Arrays.asList(item);
 
-        customer.setItems(items);
-        customerRepository.save(customer);
+        category.setItems(items);
+        categoryRepository.save(category);
     }
 
     @Test
-    void addItemWithCustomers()
+    void addItemWithCategories()
     {
-        final Customer customer = Customer.builder()
-                .customerName("E e Mishra")
+        final Category category = Category.builder()
+                .categoryName("boys-dresses")
                 .build();
-        final List<Customer> customers = Arrays.asList(customer);
+        final List<Category> categories = Arrays.asList(category);
 
         final Item item = Item.builder().itemTitle("E T-shirt").build();
-        item.setCustomers(customers);
+        item.setCategories(categories);
 
         final List<Item> items = Arrays.asList(item);
 
-        customer.setItems(items);
+        category.setItems(items);
         itemRepository.save(item);
     }
 
     @Test
-    void getAllCustomers()
+    @Transactional
+    void getAllCategories()
     {
-        final List<Customer> customers = customerRepository.findAll();
-        System.out.println("Results : "+customers);
+        final List<Category> categories = categoryRepository.findAll();
+        System.out.println("Results : "+ categories);
+        categories.forEach(c -> c.getItems().forEach(i->System.out.println("Item Title : "+ i.getItemTitle())));
     }
 
     @Test
+    @Transactional
     void getAllItems()
     {
         final List<Item> items = itemRepository.findAll();
         System.out.println("Results : "+items);
+        items.forEach(i -> i.getCategories().forEach(c->System.out.println("Category Name : "+ c.getCategoryName())));
     }
 }

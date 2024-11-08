@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface HouseRepository extends JpaRepository<House, Long> {
 
-//    @EntityGraph(attributePaths = "parkingSpace")
+    @EntityGraph(attributePaths = "parkingSpace")
     List<House> findAll();
 }

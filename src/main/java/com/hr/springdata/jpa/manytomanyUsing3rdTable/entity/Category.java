@@ -11,23 +11,23 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @ToString(exclude = "items")
-public class Customer {
+public class Category {
 
     @Id
     @SequenceGenerator(
-            name = "customer_id_seq",
-            sequenceName = "customer_id_seq",
+            name = "category_id_seq",
+            sequenceName = "category_id_seq",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = GenerationType.SEQUENCE,
-            generator = "customer_id_seq"
+            generator = "category_id_seq"
     )
-    private Long customerId;
-    private String customerName;
+    private Long categoryId;
+    private String categoryName;
 
     @ManyToMany(
-            mappedBy = "customers",
+            mappedBy = "categories",
             cascade = CascadeType.ALL,
             fetch = FetchType.LAZY
     )

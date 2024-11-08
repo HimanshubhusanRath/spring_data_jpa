@@ -51,17 +51,21 @@ public class OneToManyUsing3rdTableTest {
     }
 
     @Test
+    @Transactional
     void getAllSchools()
     {
         final List<School> schools = schoolRepository.findAll();
         System.out.println("Results : "+schools);
+        schools.forEach(s -> s.getTeachers().forEach(t -> System.out.println("Teacher Name : "+t.getTeacherName())));
     }
 
     @Test
+    @Transactional
     void getAllTeachers()
     {
         final List<Teacher> teachers = teacherRepository.findAll();
         System.out.println("Results : "+teachers);
+        teachers.forEach(s -> System.out.println("Teacher Name : "+s.getSchool()));
     }
 
 //

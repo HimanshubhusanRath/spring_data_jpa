@@ -160,7 +160,7 @@ private House house;
   * Here the class which defines the @JoinTable is the owner side and the other class is inverse side. 
     * 'joinColumns' contains the column of owner class and 'inverseJoinColumns' contains the column of inverse class. 
   * One class contains the relationship using @JoinTable annotation and the other class contains the 'mappedBy' attribute which refers to the join column in the former class.
-    * With this, no extra column (mapping column) is created in any of these tables rather a new mapping table is created referring to both these table's primary key. 
+    * With this, no extra column for mapping(foreign key) is created in any of these tables rather a new mapping table is created referring to both these table's primary key. 
   * When instance of any one of these classes is saved, the other is also saved because of the 'Cascade.ALL' property.
     * The instances of the individual classes is saved in respective tables.
     * An entry goes to the mapping table for the mapping between these two instances.
@@ -210,7 +210,7 @@ private Author author;
   * When instance of any one of these classes is saved, the other is also saved because of the 'Cascade.ALL' property.
   * When instance of the owner (@ManyToOne) class is queried, it works as mentioned below:
     * LAZY fetching : Only Owner class is fetched. [ This is expected as we already have the foreign key reference of inverse class for creating its proxy]</b>
-    * EAGER fetching : Owner class is fetched along with mapping table as well as inverse class.
+    * EAGER fetching : Owner class is fetched along with inverse class.
   * When instance of the inverse (@OneToMany) class is queried, it works as mentioned below:
     * LAZY fetching : Only the inverse class is fetched. <b> [ This may be because of pure lazy loading logic for performance reasons to avoid fetching the list of owner classes ]</b>
     * EAGER fetching : Inverse class is fetched along with owner class.
@@ -267,22 +267,22 @@ private School school;
     * LAZY fetching : Owner class is fetched along with JOIN to the mapping table to create the proxy object for the inverse class.
     * EAGER fetching : Owner class is fetched along with mapping table as well as inverse class.
   * When instance of the inverse (@OneToMany) class is queried, it works as mentioned below:
-    * LAZY fetching : Only the inverse class is fetched. Neither the mapping class nor the owner class is fetched. <b> [ This may be because of pure lazy loading logic for performance reasons to avoid fetching the list of owner classes. Here even the mapping table is also not used unless owner class reference is desired ]</b>
+    * LAZY fetching : Only the inverse class is fetched. Neither the mapping class nor the owner class is fetched. <b> [ This may be because of pure lazy loading logic for performance reasons to avoid fetching the list of owner classes. Here even the mapping table is also not used unless owner class reference is accessed ]</b>
     * EAGER fetching : Inverse class is fetched along with mapping table as well as owner class.
 
-### Customer  ----- Many to Many - using 3rd table (Bi-directional)----- Item
+### Category  ----- Many to Many - using 3rd table (Bi-directional)----- Item
 <i>
-A school can have multiple teachers so there is a OneToMany relationship between School and Teacher.
-In the other words, many teachers can be a part of one school. So, there is a ManyToOne relationship between Teacher and School.
+A category can have multiple items and one item can belong to multiple categories as well. 
+Hence, there is a ManyToMany relationship between these two.
 </i>
 <pre>
 
-CUSTOMER
+CATEGORY
 ---------
 @ManyToMany(
-mappedBy = "customers",
-cascade = CascadeType.ALL,
-fetch = FetchType.LAZY
+        mappedBy = "categories",
+        cascade = CascadeType.ALL,
+        fetch = FetchType.LAZY
 )
 private List<Item> items;
 
@@ -298,11 +298,12 @@ name="customer_items",
 joinColumns = {@JoinColumn(name = "item_id")},
 inverseJoinColumns = {@JoinColumn(name = "customer_id")}
 )
-private List<Customer> customers;
+private List<Customer> categories;
 
 </pre>
 
 * PFB the points:
+  * We can mark any one of these classes as the owner class. 
   * Here the class which defines the @JoinTable is the owner side and the other class is inverse side.
     * 'joinColumns' contains the column of owner class and 'inverseJoinColumns' contains the column of inverse class.
   * One class contains the relationship using @JoinTable annotation and the other class contains the 'mappedBy' attribute which refers to the join column in the former class.
@@ -337,3 +338,8 @@ private List<Customer> customers;
     * @OneToOne: Always ends up in EAGER, even configured as LAZY (because of proxy object creation)
     * @OneToMany: LAZY (owner class is not joined/queried) --  [As there is a list reference to the owner class, this might be done because of performance reasons]
 
+* POINTS TO REMEMBER:
+  * In case of LAZY, if we have enough information in the current class to create a proxy object for the dependent class, then we don't need to join the mapping table / dependent table else, we need to join.
+    * Examples: 
+      * In case of @OneToOne without a 3rd table, we have a foreign key column (mapping information) in the owner class. So, we can use this value to create proxy object for inverse class. Hence, no join needed.
+      * In case of @OneToOne with a 3rd table, we don't have the mapping information in the owner class. So, we need to join with the mapping table to create proxy object for inverse class.

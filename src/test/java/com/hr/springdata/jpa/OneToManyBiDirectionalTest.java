@@ -8,6 +8,7 @@ import com.hr.springdata.jpa.onetoonebidirectional.entity.Employee;
 import com.hr.springdata.jpa.onetoonebidirectional.entity.Laptop;
 import com.hr.springdata.jpa.onetoonebidirectional.repository.EmployeeRepository;
 import com.hr.springdata.jpa.onetoonebidirectional.repository.LaptopRepository;
+import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -51,21 +52,23 @@ public class OneToManyBiDirectionalTest {
                 .author(author).build();
 
         bookRepository.save(book);
-
-
     }
 
     @Test
+    @Transactional
     void getAllAuthors()
     {
         final List<Author> authors = authorRepository.findAll();
         System.out.println("Results : "+authors);
+        authors.forEach(a -> a.getBooks().forEach(b -> System.out.println("Book Name : "+b.getTitle())));
     }
 
     @Test
+    @Transactional
     void getAllBooks()
     {
         final List<Book> books = bookRepository.findAll();
         System.out.println("Results : "+books);
+        books.forEach(b -> System.out.println("Author Name : "+b.getAuthor().getAuthorName()));
     }
 }
